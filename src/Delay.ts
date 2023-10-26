@@ -2,7 +2,7 @@ import Random from './Random';
 
 type Generator = (...args: unknown[]) => number;
 
-export default class Delay<TGenerator extends Generator> {
+export default class Delay<TGenerator extends Generator = Generator> {
   constructor(
     private _generator: TGenerator,
     private _args: Parameters<TGenerator>,
