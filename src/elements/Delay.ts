@@ -1,4 +1,4 @@
-import Random from './Random';
+import Random from '../Random';
 
 type Generator = (...args: unknown[]) => number;
 
