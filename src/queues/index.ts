@@ -1,2 +1,2 @@
 export { default as Queue } from './Queue';
-export { default as UnlimitedQueue } from './UnlimitedQueue';
+export { default as PriorityQueue } from './PriorityQueue';
