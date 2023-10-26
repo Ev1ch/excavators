@@ -4,12 +4,12 @@ type Generator = (...args: unknown[]) => number;
 
 export default class Delay<TGenerator extends Generator> {
   constructor(
-    private generator: TGenerator,
-    private args: Parameters<TGenerator>,
+    private _generator: TGenerator,
+    private _args: Parameters<TGenerator>,
   ) {}
 
   public get value() {
-    return this.generator(...this.args);
+    return this._generator(...this._args);
   }
 
   public static getConstant(value: number) {
