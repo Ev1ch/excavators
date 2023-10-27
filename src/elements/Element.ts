@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 
 import Settings from '../Settings';
+import { Nexter } from './helpers';
 
 abstract class Element<TItem> {
   private static NEXT_ID = 0;
@@ -9,23 +10,36 @@ abstract class Element<TItem> {
   private _tCurrent: number;
   private _tNext: number;
   private _quantity: number;
-  private _item: TItem | null;
+  private _totalTimeBeforeIn: number;
+  private _tInPrevious: number;
+  private _totalTimeBeforeOut: number;
+  private _tOutPrevious: number;
+  private _nexter: Nexter<TItem> | null;
 
   constructor(private _name: string) {
     this._id = Element.NEXT_ID++;
     this._tCurrent = 0;
     this._tNext = Infinity;
+    this._quantity = 0;
+    this._totalTimeBeforeIn = 0;
+    this._tInPrevious = 0;
+    this._totalTimeBeforeOut = 0;
+    this._tOutPrevious = 0;
+    this._nexter = null;
   }
-
-  public abstract calculateStatistics(delta: number): void;
 
   public abstract get isFree(): boolean;
 
+  public calculateStatistics(delta: number) {}
+
   public inAct(item: TItem | null) {
-    this._item = item;
+    this._totalTimeBeforeIn += this.tCurrent - this._tInPrevious;
+    this._tInPrevious = this.tCurrent;
   }
 
   public outAct() {
+    this._totalTimeBeforeOut += this.tCurrent - this._tOutPrevious;
+    this._tOutPrevious = this.tCurrent;
     this._quantity++;
   }
 
@@ -33,11 +47,19 @@ abstract class Element<TItem> {
     return this._quantity;
   }
 
+  public get totalTimeBeforeIn() {
+    return this._totalTimeBeforeIn;
+  }
+
+  public get totalTimeBeforeOut() {
+    return this._totalTimeBeforeOut;
+  }
+
   public get tCurrent() {
     return this._tCurrent;
   }
 
-  protected set tCurrent(tCurrent: number) {
+  public set tCurrent(tCurrent: number) {
     this._tCurrent = tCurrent;
   }
 
@@ -65,28 +87,31 @@ abstract class Element<TItem> {
     this._name = name;
   }
 
-  protected get item() {
-    return this._item;
+  public get nexter() {
+    return this._nexter;
   }
 
-  protected set item(item: TItem | null) {
-    this._item = item;
+  public set nexter(nexter: Nexter<TItem> | null) {
+    this._nexter = nexter;
   }
 
   public printResult() {
     process.stdout.write(
-      [chalk.green(this._name), `quantity = ${this._quantity}`].join(
-        Settings.DIVIDER,
-      ),
+      [
+        chalk.green(this._name.padEnd(Settings.PADDING)),
+        `quantity = ${this._quantity}`.padEnd(Settings.PADDING),
+      ].join(Settings.DIVIDER),
     );
   }
 
   public printInfo() {
     console.log(
       [
-        chalk.green(this._name),
-        `quantity = ${this.quantity}`,
-        `tNext = ${this.tNext.toFixed(Settings.T_NEXT_PRECISION)}`,
+        chalk.green(this._name.padEnd(Settings.PADDING)),
+        ...[
+          `quantity = ${this.quantity}`,
+          `tNext = ${this.tNext.toFixed(Settings.TIME_PRECISION)}`,
+        ].map((string) => string.padEnd(Settings.PADDING)),
       ].join(Settings.DIVIDER),
     );
   }
