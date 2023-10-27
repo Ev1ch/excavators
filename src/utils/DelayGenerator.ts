@@ -4,7 +4,7 @@ export interface DelayGenerator {
   get(): number;
 }
 
-export class ConstantDelay implements DelayGenerator {
+export class ConstantDelayGenerator implements DelayGenerator {
   constructor(private _delay: number) {}
 
   public get() {
@@ -12,7 +12,7 @@ export class ConstantDelay implements DelayGenerator {
   }
 }
 
-export class UniformDelay implements DelayGenerator {
+export class UniformDelayGenerator implements DelayGenerator {
   constructor(private _min: number, private _max: number) {}
 
   public get() {
@@ -20,7 +20,7 @@ export class UniformDelay implements DelayGenerator {
   }
 }
 
-export class ExponentialDelay implements DelayGenerator {
+export class ExponentialDelayGenerator implements DelayGenerator {
   constructor(private _mean: number) {}
 
   public get() {
@@ -28,7 +28,7 @@ export class ExponentialDelay implements DelayGenerator {
   }
 }
 
-export class NormalDelay implements DelayGenerator {
+export class NormalDelayGenerator implements DelayGenerator {
   constructor(private _mean: number, private _deviation: number) {}
 
   public get() {
@@ -36,7 +36,7 @@ export class NormalDelay implements DelayGenerator {
   }
 }
 
-export class ErlangDelay implements DelayGenerator {
+export class ErlangDelayGenerator implements DelayGenerator {
   constructor(private _mean: number, private _deviation: number) {}
 
   public get() {
@@ -44,7 +44,7 @@ export class ErlangDelay implements DelayGenerator {
   }
 }
 
-export class GaussianDelay implements DelayGenerator {
+export class GaussianDelayGenerator implements DelayGenerator {
   public get() {
     return Random.getGaussian();
   }
