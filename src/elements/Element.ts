@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 
 import Settings from '../Settings';
-import { Nexter } from './helpers';
+import { Next } from './helpers';
 
 abstract class Element<TItem> {
   private static NEXT_ID = 0;
@@ -14,7 +14,7 @@ abstract class Element<TItem> {
   private _tInPrevious: number;
   private _totalTimeBeforeOut: number;
   private _tOutPrevious: number;
-  private _nexter: Nexter<TItem> | null;
+  private _next: Next<TItem> | null;
 
   constructor(private _name: string) {
     this._id = Element.NEXT_ID++;
@@ -25,7 +25,7 @@ abstract class Element<TItem> {
     this._tInPrevious = 0;
     this._totalTimeBeforeOut = 0;
     this._tOutPrevious = 0;
-    this._nexter = null;
+    this._next = null;
   }
 
   public abstract get isFree(): boolean;
@@ -87,12 +87,12 @@ abstract class Element<TItem> {
     this._name = name;
   }
 
-  public get nexter() {
-    return this._nexter;
+  public get next() {
+    return this._next;
   }
 
-  public set nexter(nexter: Nexter<TItem> | null) {
-    this._nexter = nexter;
+  public set next(next: Next<TItem> | null) {
+    this._next = next;
   }
 
   public printResult() {

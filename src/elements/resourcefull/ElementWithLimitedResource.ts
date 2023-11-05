@@ -67,7 +67,7 @@ export default class ElementWithLimitedResource<
     busyWorker.item = null;
     this.tNext = this.getMinimumTNextFromBusyWorkers();
 
-    const nextElement = this.nexter?.getNextElement(item);
+    const nextElement = this.next?.getNextElement(item);
 
     if (
       nextElement &&

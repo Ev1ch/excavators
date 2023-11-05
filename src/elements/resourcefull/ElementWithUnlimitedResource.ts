@@ -43,7 +43,7 @@ export default class ElementWithUnlimitedResource<
       throw new Error('There is no item in busy worker');
     }
 
-    const nextElement = this.nexter?.getNextElement(item);
+    const nextElement = this.next?.getNextElement(item);
     if (
       nextElement &&
       !nextElement.element.isFree &&

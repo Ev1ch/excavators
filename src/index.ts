@@ -1,6 +1,6 @@
 import { ExponentialDelayGenerator, ConstantDelayGenerator } from './utils';
 import { UnlimitedQueue } from './queues';
-import { ConditionalNexter, SingleNexter } from './elements/helpers';
+import { ConditionalNext, SingleNext } from './elements/helpers';
 import {
   Worker,
   ElementWithLimitedResource,
@@ -120,12 +120,12 @@ class Models {
         }),
     );
 
-    excavator1.nexter = new SingleNexter({ element: going });
-    excavator2.nexter = new SingleNexter({ element: going });
-    excavator3.nexter = new SingleNexter({ element: going });
-    going.nexter = new SingleNexter({ element: crushing });
-    crushing.nexter = new SingleNexter({ element: goingBack });
-    goingBack.nexter = new ConditionalNexter<Truck>()
+    excavator1.next = new SingleNext({ element: going });
+    excavator2.next = new SingleNext({ element: going });
+    excavator3.next = new SingleNext({ element: going });
+    going.next = new SingleNext({ element: crushing });
+    crushing.next = new SingleNext({ element: goingBack });
+    goingBack.next = new ConditionalNext<Truck>()
       .addNextElement(excavator1, (truck) => truck.excavator === 1)
       .addNextElement(excavator2, (truck) => truck.excavator === 2)
       .addNextElement(excavator3, (truck) => truck.excavator === 3);

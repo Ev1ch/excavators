@@ -1,1 +1,1 @@
-export * from './Nexter';
+export * from './Next';

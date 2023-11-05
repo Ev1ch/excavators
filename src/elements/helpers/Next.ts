@@ -5,11 +5,11 @@ export interface NextElement<TItem> {
   withBlocking?: boolean;
 }
 
-export interface Nexter<TItem> {
+export interface Next<TItem> {
   getNextElement(item: TItem): NextElement<TItem> | null;
 }
 
-export class SingleNexter<TItem> implements Nexter<TItem> {
+export class SingleNext<TItem> implements Next<TItem> {
   constructor(private _nextElement: NextElement<TItem> | null) {}
 
   public getNextElement() {
@@ -17,7 +17,7 @@ export class SingleNexter<TItem> implements Nexter<TItem> {
   }
 }
 
-export class RandomNexter<TItem> implements Nexter<TItem> {
+export class RandomNext<TItem> implements Next<TItem> {
   constructor(private _nextElements: NextElement<TItem>[]) {}
 
   public getNextElement() {
@@ -33,7 +33,7 @@ export interface NextElementWithPriority<TItem> extends NextElement<TItem> {
   priority: number;
 }
 
-export class PrioritizedNexter<TItem> implements Nexter<TItem> {
+export class PrioritizedNext<TItem> implements Next<TItem> {
   constructor(private _nextElements: NextElementWithPriority<TItem>[]) {}
 
   public getNextElement() {
@@ -49,7 +49,7 @@ export interface NextElementWithProbability<TItem> extends NextElement<TItem> {
   probability: number;
 }
 
-export class ProbabilisticNexter<TItem> implements Nexter<TItem> {
+export class ProbabilisticNext<TItem> implements Next<TItem> {
   constructor(private _nextElements: NextElementWithProbability<TItem>[]) {}
 
   public getNextElement() {
@@ -81,7 +81,7 @@ interface NextElementWithCondition<TItem> extends NextElement<TItem> {
   condition: (item: TItem) => boolean;
 }
 
-export class ConditionalNexter<TItem> implements Nexter<TItem> {
+export class ConditionalNext<TItem> implements Next<TItem> {
   constructor(private _nextElements: NextElementWithCondition<TItem>[] = []) {}
 
   public getNextElement(item: TItem) {
