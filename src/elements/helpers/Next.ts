@@ -55,12 +55,7 @@ export class ProbabilisticNext<TItem> implements Next<TItem> {
   public getNextElement() {
     const random = Math.random();
 
-    if (
-      this._nextElements.reduce(
-        (sum, { probability }) => sum + probability,
-        0,
-      ) !== 1
-    ) {
+    if (this.getNextElementsProbabilitiesSum() !== 1) {
       throw new Error('Sum of probabilities is not equal to 1');
     }
 
@@ -74,6 +69,13 @@ export class ProbabilisticNext<TItem> implements Next<TItem> {
     }
 
     return null;
+  }
+
+  protected getNextElementsProbabilitiesSum() {
+    return this._nextElements.reduce(
+      (sum, { probability }) => sum + probability,
+      0,
+    );
   }
 }
 
