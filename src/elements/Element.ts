@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import Settings from '../Settings';
 import { Next } from './helpers';
 
-abstract class Element<TItem> {
+export default abstract class Element<TItem> {
   private static NEXT_ID = 0;
 
   private _id: number;
@@ -116,5 +116,3 @@ abstract class Element<TItem> {
     );
   }
 }
-
-export default Element;
