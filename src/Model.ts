@@ -93,7 +93,7 @@ export default class Model<TItem, TElement extends Element<TItem>> {
         'Mean time before in',
         'Mean time before out',
         'Mean queue size',
-        'Failure',
+        'Failures number',
         'Failure probability',
       ],
     ];
@@ -134,9 +134,9 @@ export default class Model<TItem, TElement extends Element<TItem>> {
       meanWorkingTime,
       meanTimeBeforeIn,
       meanTimeBeforeOut,
+      meanQueueSize,
       element.failuresNumber,
       failuresProbability,
-      meanQueueSize,
     ] as const;
   }
 
