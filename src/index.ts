@@ -1,5 +1,4 @@
 import { ExponentialDelayGenerator, ConstantDelayGenerator } from './utils';
-import { UnlimitedQueue } from './queues';
 import { ConditionalNext, SingleNext } from './elements/helpers';
 import {
   Worker,
@@ -8,12 +7,13 @@ import {
 } from './elements/resourcefull';
 
 import Model from './Model';
+import { PriorityQueue, Queue } from './queues';
 
 class Models {
   public static getDefault() {
     class Truck {
-      public _capacity: number;
-      public _excavator: number;
+      private _capacity: number;
+      private _excavator: number;
 
       constructor(capacity: number, excavator: number) {
         this._capacity = capacity;
@@ -41,33 +41,22 @@ class Models {
       throw new Error('Invalid truck capacity');
     };
 
-    const excavator1 = new ElementWithLimitedResource<Truck>(
-      'EXCAVATOR 1',
-      new UnlimitedQueue([new Truck(50, 1)]),
-      {
-        workers: [new Worker(1, getExcavatorDelayGenerator)],
-      },
-    );
-    excavator1.inAct(new Truck(20, 1));
+    const getExcavator = (id: number) => {
+      const excavator = new ElementWithLimitedResource<Truck>(
+        `EXCAVATOR ${id}`,
+        new Queue(Infinity, [new Truck(50, id)]),
+        {
+          workers: [new Worker(1, getExcavatorDelayGenerator)],
+        },
+      );
+      excavator.inAct(new Truck(20, id));
 
-    const excavator2 = new ElementWithLimitedResource<Truck>(
-      'EXCAVATOR 2',
-      new UnlimitedQueue([new Truck(50, 2)]),
-      {
-        workers: [new Worker(1, getExcavatorDelayGenerator)],
-      },
-    );
-    excavator2.inAct(new Truck(20, 2));
+      return excavator;
+    };
 
-    const excavator3 = new ElementWithLimitedResource<Truck>(
-      'EXCAVATOR 3',
-      new UnlimitedQueue([new Truck(20, 3), new Truck(50, 3)]),
-      {
-        workers: [new Worker(1, getExcavatorDelayGenerator)],
-      },
-    );
-    excavator3.inAct(new Truck(20, 3));
-
+    const excavator1 = getExcavator(1);
+    const excavator2 = getExcavator(2);
+    const excavator3 = getExcavator(3);
     const going = new ElementWithUnlimitedResource<Truck>(
       'GOING',
       (id) =>
@@ -83,10 +72,9 @@ class Models {
           throw new Error('Invalid truck capacity');
         }),
     );
-
     const crushing = new ElementWithLimitedResource<Truck>(
       'CRUSHING',
-      new UnlimitedQueue(),
+      new PriorityQueue<Truck>(Infinity, (a, b) => a.capacity > b.capacity),
       {
         workers: [
           new Worker(1, (truck) => {
@@ -103,7 +91,6 @@ class Models {
         ],
       },
     );
-
     const goingBack = new ElementWithUnlimitedResource<Truck>(
       'GOING BACK',
       (id) =>
