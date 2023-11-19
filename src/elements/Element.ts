@@ -95,24 +95,7 @@ export default abstract class Element<TItem> {
     this._next = next;
   }
 
-  public printResult() {
-    process.stdout.write(
-      [
-        chalk.green(this._name.padEnd(Settings.PADDING)),
-        `quantity = ${this._quantity}`.padEnd(Settings.PADDING),
-      ].join(Settings.DIVIDER),
-    );
-  }
-
-  public printInfo() {
-    console.log(
-      [
-        chalk.green(this._name.padEnd(Settings.PADDING)),
-        ...[
-          `quantity = ${this.quantity}`,
-          `tNext = ${this.tNext.toFixed(Settings.TIME_PRECISION)}`,
-        ].map((string) => string.padEnd(Settings.PADDING)),
-      ].join(Settings.DIVIDER),
-    );
+  public getInformation() {
+    return [this.quantity, this.tNext] as const;
   }
 }

@@ -8,6 +8,9 @@ import {
 
 import Settings from './Settings';
 
+type Row = readonly (string | number)[];
+type Table = Row[];
+
 export default class Model<TItem, TElement extends Element<TItem>> {
   private _tCurrent: number;
   private _tNext: number;
@@ -38,11 +41,9 @@ export default class Model<TItem, TElement extends Element<TItem>> {
       }
 
       console.log(
-        chalk.yellow(
-          `Item in ${chalk.green(
-            currentElement.name,
-          )}, time = ${this._tNext.toFixed(Settings.TIME_PRECISION)}:`,
-        ),
+        `Item in ${chalk.green(
+          `'${currentElement.name}'`,
+        )}, time = ${chalk.yellow(this.getFormattedNumber(this._tNext))}:`,
       );
 
       for (const element of this._list) {
@@ -68,77 +69,105 @@ export default class Model<TItem, TElement extends Element<TItem>> {
   }
 
   private printInformation() {
+    const table: (string | number)[][] = [['Name', 'Quantity', 'Time next']];
+
     for (const element of this._list) {
-      element.printInfo();
+      table.push([
+        element.name,
+        ...this.getFormattedRow(element.getInformation()),
+      ]);
     }
 
+    console.table(table);
     console.log();
   }
 
   private printResults() {
-    console.log(chalk.yellow('Results'));
+    console.log('Results');
 
+    const table: Table = [
+      [
+        'Name',
+        'Quantity',
+        'Mean work time',
+        'Mean time before in',
+        'Mean time before out',
+        'Mean queue size',
+        'Failure',
+        'Failure probability',
+      ],
+    ];
     for (const element of this._list) {
-      element.printResult();
+      const commonColumns = [element.name, element.quantity] as const;
 
       if (element instanceof ElementWithLimitedResource) {
-        this.printResultsElementWithLimitedResources(element);
+        table.push([
+          ...commonColumns,
+          ...this.getFormattedRow(
+            this.printResultsElementWithLimitedResources(element),
+          ),
+        ]);
       } else if (element instanceof ElementWithUnlimitedResource) {
-        this.printResultsForProcessWithUnlimitedResources(element);
-      } else {
-        process.stdout.write('\n');
+        table.push([
+          ...commonColumns,
+          ...this.getFormattedRow(
+            this.printResultsForProcessWithUnlimitedResources(element),
+          ),
+        ]);
       }
     }
+
+    console.table(table);
   }
 
   private printResultsElementWithLimitedResources(
     element: ElementWithLimitedResource<TItem>,
   ) {
-    process.stdout.write(
-      Settings.DIVIDER +
-        [
-          `mean length of queue = ${(element.queuesSizes / this._time).toFixed(
-            Settings.FLOAT_PRECISION,
-          )}`,
-          `failure = ${element.failuresNumber} (${(
-            element.failuresNumber /
-            (element.quantity + element.failuresNumber)
-          ).toFixed(Settings.FLOAT_PRECISION)})`,
-          `mean work time = ${(element.workingTime / this._time).toFixed(
-            Settings.TIME_PRECISION,
-          )}`,
-          `mean time before in = ${(
-            element.totalTimeBeforeIn / this._time
-          ).toFixed(Settings.TIME_PRECISION)}`,
-          `mean time before out = ${(
-            element.totalTimeBeforeOut / this._time
-          ).toFixed(Settings.TIME_PRECISION)}`,
-        ]
-          .map((string) => string.padEnd(Settings.PADDING))
-          .join(Settings.DIVIDER) +
-        '\n',
-    );
+    const meanWorkingTime = element.workingTime / this._time;
+    const meanTimeBeforeIn = element.totalTimeBeforeIn / this._time;
+    const meanTimeBeforeOut = element.totalTimeBeforeOut / this._time;
+    const failuresProbability =
+      element.failuresNumber / (element.quantity + element.failuresNumber);
+    const meanQueueSize = element.queuesSizes / this._time;
+
+    return [
+      meanWorkingTime,
+      meanTimeBeforeIn,
+      meanTimeBeforeOut,
+      element.failuresNumber,
+      failuresProbability,
+      meanQueueSize,
+    ] as const;
   }
 
   private printResultsForProcessWithUnlimitedResources(
     element: ElementWithUnlimitedResource<TItem>,
   ) {
-    process.stdout.write(
-      Settings.DIVIDER +
-        [
-          `mean work time = ${(element.workingTime / this._time).toFixed(
-            Settings.TIME_PRECISION,
-          )}`,
-          `mean time before in = ${(
-            element.totalTimeBeforeIn / this._time
-          ).toFixed(Settings.TIME_PRECISION)}`,
-          `mean time before out = ${(
-            element.totalTimeBeforeOut / this._time
-          ).toFixed(Settings.TIME_PRECISION)}`,
-        ]
-          .map((string) => string.padEnd(Settings.PADDING))
-          .join(Settings.DIVIDER) +
-        '\n',
+    const meanWorkingTime = element.workingTime / this._time;
+    const meanTimeBeforeIn = element.totalTimeBeforeIn / this._time;
+    const meanTimeBeforeOut = element.totalTimeBeforeOut / this._time;
+
+    return [
+      meanWorkingTime,
+      meanTimeBeforeIn,
+      meanTimeBeforeOut,
+      '-',
+      '-',
+      '-',
+    ] as const;
+  }
+
+  private getFormattedRow(row: Row) {
+    return row.map((value) =>
+      typeof value === 'number' ? this.getFormattedNumber(value) : value,
     );
+  }
+
+  private getFormattedNumber(number: number) {
+    if (number % 1 !== 0) {
+      return Number(number.toFixed(Settings.FLOAT_PRECISION));
+    }
+
+    return number;
   }
 }
