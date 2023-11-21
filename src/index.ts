@@ -12,13 +12,7 @@ import { PriorityQueue, Queue } from './queues';
 class Models {
   public static getDefault() {
     class Truck {
-      private _capacity: number;
-      private _excavator: number;
-
-      constructor(capacity: number, excavator: number) {
-        this._capacity = capacity;
-        this._excavator = excavator;
-      }
+      constructor(private _capacity: number, private _excavator: number) {}
 
       public get capacity() {
         return this._capacity;
