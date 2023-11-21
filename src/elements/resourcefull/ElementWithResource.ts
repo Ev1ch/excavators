@@ -1,9 +1,6 @@
 import Element from '../Element';
 import Worker, { WorkerState } from './Worker';
 
-/*
- * Resource workers
- */
 export default abstract class ElementWithResource<
   TItem,
 > extends Element<TItem> {
