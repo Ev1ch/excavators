@@ -16,10 +16,14 @@ export default class ElementWithUnlimitedResource<
   public inAct(item: TItem) {
     super.inAct(item);
 
-    const freeWorker = this._createWorker(
-      ElementWithUnlimitedResource.NEXT_WORKER_ID++,
-    );
-    this.workers.push(freeWorker);
+    const freeWorker =
+      this.getFreeWorker() ??
+      this._createWorker(ElementWithUnlimitedResource.NEXT_WORKER_ID++);
+
+    if (!this.workers.includes(freeWorker)) {
+      this.workers.push(freeWorker);
+    }
+
     freeWorker.state = WorkerState.BUSY;
     freeWorker.item = item;
     const delay = freeWorker.getDelay();
