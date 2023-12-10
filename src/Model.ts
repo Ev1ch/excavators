@@ -10,6 +10,9 @@ import Settings from './Settings';
 
 type Row = readonly (string | number)[];
 type Table = Row[];
+interface SimulationOptions {
+  skip: number;
+}
 
 export default class Model<TItem, TElement extends Element<TItem>> {
   private _tCurrent: number;
@@ -22,7 +25,7 @@ export default class Model<TItem, TElement extends Element<TItem>> {
     this._time = 0;
   }
 
-  public simulate(time: number) {
+  public simulate(time: number, options?: SimulationOptions) {
     this._time = time;
 
     while (this._tCurrent < time) {
@@ -46,8 +49,10 @@ export default class Model<TItem, TElement extends Element<TItem>> {
         )}, time = ${chalk.yellow(this.getFormattedNumber(this._tNext))}:`,
       );
 
-      for (const element of this._list) {
-        element.calculateStatistics(this._tNext - this._tCurrent);
+      if (!options?.skip || this._tNext > options.skip) {
+        for (const element of this._list) {
+          element.calculateStatistics(this._tNext - this._tCurrent);
+        }
       }
 
       this._tCurrent = this._tNext;
