@@ -34,7 +34,11 @@ export default class ElementWithLimitedResource<
       freeWorker.item = item;
       const delay = freeWorker.getDelay();
       freeWorker.tNext = this.tCurrent + delay;
-      this.workingTime += delay;
+
+      if (!this.shouldSkip()) {
+        this.workingTime += delay;
+      }
+
       this.tNext = this.getMinimumTNextFromBusyWorkers();
       return;
     }
@@ -44,7 +48,9 @@ export default class ElementWithLimitedResource<
       return;
     }
 
-    this._failuresNumber++;
+    if (!this.shouldSkip()) {
+      this._failuresNumber++;
+    }
   }
 
   public outAct() {
@@ -86,7 +92,11 @@ export default class ElementWithLimitedResource<
       busyWorker.item = item;
       const delay = busyWorker.getDelay();
       busyWorker.tNext = this.tCurrent + delay;
-      this.workingTime += delay;
+
+      if (!this.shouldSkip()) {
+        this.workingTime += delay;
+      }
+
       this.tNext = this.getMinimumTNextFromBusyWorkers();
     }
 
@@ -94,7 +104,9 @@ export default class ElementWithLimitedResource<
   }
 
   public calculateStatistics(delta: number) {
-    this._queuesSizes += this._queue.size * delta;
+    if (!this.shouldSkip()) {
+      this._queuesSizes += this._queue.size * delta;
+    }
   }
 
   public get isFree() {

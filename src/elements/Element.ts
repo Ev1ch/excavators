@@ -1,6 +1,3 @@
-import chalk from 'chalk';
-
-import Settings from '../Settings';
 import { Next } from './helpers';
 
 export default abstract class Element<TItem> {
@@ -14,6 +11,7 @@ export default abstract class Element<TItem> {
   private _tInPrevious: number;
   private _totalTimeBeforeOut: number;
   private _tOutPrevious: number;
+  private _skip: number;
   private _next: Next<TItem> | null;
 
   constructor(private _name: string) {
@@ -26,6 +24,7 @@ export default abstract class Element<TItem> {
     this._totalTimeBeforeOut = 0;
     this._tOutPrevious = 0;
     this._next = null;
+    this._skip = 0;
   }
 
   public abstract get isFree(): boolean;
@@ -33,14 +32,18 @@ export default abstract class Element<TItem> {
   public calculateStatistics(delta: number) {}
 
   public inAct(item: TItem | null) {
-    this._totalTimeBeforeIn += this.tCurrent - this._tInPrevious;
-    this._tInPrevious = this.tCurrent;
+    if (!this.shouldSkip()) {
+      this._totalTimeBeforeIn += this.tCurrent - this._tInPrevious;
+      this._tInPrevious = this.tCurrent;
+    }
   }
 
   public outAct() {
-    this._totalTimeBeforeOut += this.tCurrent - this._tOutPrevious;
-    this._tOutPrevious = this.tCurrent;
-    this._quantity++;
+    if (!this.shouldSkip()) {
+      this._totalTimeBeforeOut += this.tCurrent - this._tOutPrevious;
+      this._tOutPrevious = this.tCurrent;
+      this._quantity++;
+    }
   }
 
   public get quantity() {
@@ -93,6 +96,18 @@ export default abstract class Element<TItem> {
 
   public set next(next: Next<TItem> | null) {
     this._next = next;
+  }
+
+  public set skip(skip: number) {
+    this._skip = skip;
+  }
+
+  public get skip() {
+    return this._skip;
+  }
+
+  public shouldSkip() {
+    return this._skip >= this.tCurrent;
   }
 
   public getInformation() {

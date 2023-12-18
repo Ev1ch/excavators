@@ -28,7 +28,11 @@ export default class ElementWithUnlimitedResource<
     freeWorker.item = item;
     const delay = freeWorker.getDelay();
     freeWorker.tNext = this.tCurrent + delay;
-    this.workingTime += delay;
+
+    if (!this.shouldSkip()) {
+      this.workingTime += delay;
+    }
+
     this.tNext = this.getMinimumTNextFromBusyWorkers();
   }
 

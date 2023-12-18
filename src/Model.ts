@@ -26,6 +26,8 @@ export default class Model<TItem, TElement extends Element<TItem>> {
   }
 
   public simulate(time: number, options?: SimulationOptions) {
+    const skip = options?.skip ?? 0;
+    this.setElementsSkip(skip);
     this._time = time;
 
     while (this._tCurrent < time) {
@@ -49,10 +51,8 @@ export default class Model<TItem, TElement extends Element<TItem>> {
         )}, time = ${chalk.yellow(this.getFormattedNumber(this._tNext))}:`,
       );
 
-      if (!options?.skip || this._tNext > options.skip) {
-        for (const element of this._list) {
-          element.calculateStatistics(this._tNext - this._tCurrent);
-        }
+      for (const element of this._list) {
+        element.calculateStatistics(this._tNext - this._tCurrent);
       }
 
       this._tCurrent = this._tNext;
@@ -71,6 +71,12 @@ export default class Model<TItem, TElement extends Element<TItem>> {
     }
 
     this.printResults();
+  }
+
+  private setElementsSkip(skip: number) {
+    this._list.forEach((element) => {
+      element.skip = skip;
+    });
   }
 
   private printInformation() {
