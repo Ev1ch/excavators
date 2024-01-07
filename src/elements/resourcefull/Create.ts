@@ -2,6 +2,8 @@ import Element from '../Element';
 import Worker from './Worker';
 
 export default class Create<TItem> extends Element<TItem> {
+  private _workingTime: number;
+
   constructor(
     name: string,
     private _worker: Worker<TItem>,
@@ -9,6 +11,7 @@ export default class Create<TItem> extends Element<TItem> {
   ) {
     super(name);
     this.tNext = 0;
+    this._workingTime = 0;
   }
 
   public outAct() {
@@ -16,10 +19,16 @@ export default class Create<TItem> extends Element<TItem> {
 
     const item = this._createItem();
     this._worker.item = item;
-    this.tNext = this.tCurrent + this._worker.getDelay();
+    const delay = this._worker.getDelay();
+    this.tNext = this.tCurrent + delay;
+    this._workingTime += delay;
 
     const nextElement = this.next?.getNextElement(item);
     nextElement?.element.inAct(item);
+  }
+
+  public get workingTime() {
+    return this._workingTime;
   }
 
   public get isFree() {
