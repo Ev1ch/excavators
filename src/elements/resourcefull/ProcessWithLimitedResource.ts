@@ -3,10 +3,6 @@ import { Queue } from '../../queues';
 import Worker, { WorkerState } from './Worker';
 import ProcessWithResource from './ProcessWithResource';
 
-export interface ProcessWithLimitedResourceOptions<TItem> {
-  workers: Worker<TItem>[];
-}
-
 export default class ProcessWithLimitedResource<
   TItem,
 > extends ProcessWithResource<TItem> {
@@ -16,7 +12,7 @@ export default class ProcessWithLimitedResource<
   constructor(
     name: string,
     private _queue: Queue<TItem>,
-    { workers }: ProcessWithLimitedResourceOptions<TItem>,
+    workers: Worker<TItem>[],
   ) {
     super(name);
     this.workers = workers;
