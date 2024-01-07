@@ -2,6 +2,7 @@ import chalk from 'chalk';
 
 import { Element } from './elements';
 import {
+  Create,
   ProcessWithLimitedResource,
   ProcessWithUnlimitedResource,
 } from './elements/resourcefull';
@@ -125,6 +126,11 @@ export default class Model<TItem, TElement extends Element<TItem>> {
             this.printResultsForProcessWithUnlimitedResources(element),
           ),
         ]);
+      } else if (element instanceof Create) {
+        table.push([
+          ...commonColumns,
+          ...this.getFormattedRow(this.printResultsForCreate(element)),
+        ]);
       }
     }
 
@@ -166,6 +172,13 @@ export default class Model<TItem, TElement extends Element<TItem>> {
       '-',
       '-',
     ] as const;
+  }
+
+  private printResultsForCreate(element: Create<TItem>) {
+    const meanWorkingTime = element.workingTime / this._time;
+    const meanTimeBeforeOut = element.totalTimeBeforeOut / this._time;
+
+    return [meanWorkingTime, '-', meanTimeBeforeOut, '-', '-', '-'] as const;
   }
 
   private getFormattedRow(row: Row) {
