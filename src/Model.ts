@@ -2,8 +2,8 @@ import chalk from 'chalk';
 
 import { Element } from './elements';
 import {
-  ElementWithLimitedResource,
-  ElementWithUnlimitedResource,
+  ProcessWithLimitedResource,
+  ProcessWithUnlimitedResource,
 } from './elements/resourcefull';
 
 import Settings from './Settings';
@@ -111,14 +111,14 @@ export default class Model<TItem, TElement extends Element<TItem>> {
     for (const element of this._list) {
       const commonColumns = [element.name, element.quantity] as const;
 
-      if (element instanceof ElementWithLimitedResource) {
+      if (element instanceof ProcessWithLimitedResource) {
         table.push([
           ...commonColumns,
           ...this.getFormattedRow(
             this.printResultsElementWithLimitedResources(element),
           ),
         ]);
-      } else if (element instanceof ElementWithUnlimitedResource) {
+      } else if (element instanceof ProcessWithUnlimitedResource) {
         table.push([
           ...commonColumns,
           ...this.getFormattedRow(
@@ -132,7 +132,7 @@ export default class Model<TItem, TElement extends Element<TItem>> {
   }
 
   private printResultsElementWithLimitedResources(
-    element: ElementWithLimitedResource<TItem>,
+    element: ProcessWithLimitedResource<TItem>,
   ) {
     const meanWorkingTime = element.workingTime / this._time;
     const meanTimeBeforeIn = element.totalTimeBeforeIn / this._time;
@@ -152,7 +152,7 @@ export default class Model<TItem, TElement extends Element<TItem>> {
   }
 
   private printResultsForProcessWithUnlimitedResources(
-    element: ElementWithUnlimitedResource<TItem>,
+    element: ProcessWithUnlimitedResource<TItem>,
   ) {
     const meanWorkingTime = element.workingTime / this._time;
     const meanTimeBeforeIn = element.totalTimeBeforeIn / this._time;
