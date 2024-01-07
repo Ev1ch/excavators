@@ -14,8 +14,12 @@ export default class Create<TItem> extends Element<TItem> {
   public outAct() {
     super.outAct();
 
+    const item = this._createItem();
+    this._worker.item = item;
     this.tNext = this.tCurrent + this._worker.getDelay();
-    this.next?.getNextElement(this._createItem());
+
+    const nextElement = this.next?.getNextElement(item);
+    nextElement?.element.inAct(item);
   }
 
   public get isFree() {
