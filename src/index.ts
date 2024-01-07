@@ -1,6 +1,7 @@
 import { SingleNext } from './elements/helpers';
 import {
   Create,
+  Dispose,
   ProcessWithLimitedResource,
   Worker,
 } from './elements/resourcefull';
@@ -20,7 +21,10 @@ const process = new ProcessWithLimitedResource<Item>('PROCESS', new Queue(1), [
   new Worker(1, () => new ConstantDelayGenerator(2)),
 ]);
 
-create.next = new SingleNext({ element: process });
+const dispose = new Dispose('DISPOSE');
 
-const model = new Model([create, process]);
+create.next = new SingleNext({ element: process });
+process.next = new SingleNext({ element: dispose });
+
+const model = new Model([create, process, dispose]);
 model.simulate(1000);

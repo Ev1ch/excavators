@@ -131,6 +131,11 @@ export default class Model<TItem, TElement extends Element<TItem>> {
           ...commonColumns,
           ...this.getFormattedRow(this.printResultsForCreate(element)),
         ]);
+      } else {
+        table.push([
+          ...commonColumns,
+          ...this.getFormattedRow(this.printResultsForElement(element)),
+        ]);
       }
     }
 
@@ -179,6 +184,13 @@ export default class Model<TItem, TElement extends Element<TItem>> {
     const meanTimeBeforeOut = element.totalTimeBeforeOut / this._time;
 
     return [meanWorkingTime, '-', meanTimeBeforeOut, '-', '-', '-'] as const;
+  }
+
+  private printResultsForElement(element: Element<TItem>) {
+    const meanTimeBeforeIn = element.totalTimeBeforeIn / this._time;
+    const meanTimeBeforeOut = element.totalTimeBeforeOut / this._time;
+
+    return ['-', meanTimeBeforeIn, meanTimeBeforeOut, '-', '-', '-'] as const;
   }
 
   private getFormattedRow(row: Row) {
