@@ -1,9 +1,9 @@
 import Worker, { WorkerState } from './Worker';
-import ElementWithResource from './ElementWithResource';
+import ProcessWithResource from './ProcessWithResource';
 
-export default class ElementWithUnlimitedResource<
+export default class ProcessWithUnlimitedResource<
   TItem,
-> extends ElementWithResource<TItem> {
+> extends ProcessWithResource<TItem> {
   private static NEXT_WORKER_ID = 0;
 
   constructor(
@@ -18,7 +18,7 @@ export default class ElementWithUnlimitedResource<
 
     const freeWorker =
       this.getFreeWorker() ??
-      this._createWorker(ElementWithUnlimitedResource.NEXT_WORKER_ID++);
+      this._createWorker(ProcessWithUnlimitedResource.NEXT_WORKER_ID++);
 
     if (!this.workers.includes(freeWorker)) {
       this.workers.push(freeWorker);

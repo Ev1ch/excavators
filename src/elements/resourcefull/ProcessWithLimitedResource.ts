@@ -1,22 +1,22 @@
 import { Queue } from '../../queues';
 
 import Worker, { WorkerState } from './Worker';
-import ElementWithResource from './ElementWithResource';
+import ProcessWithResource from './ProcessWithResource';
 
-export interface ElementWithLimitedResourceOptions<TItem> {
+export interface ProcessWithLimitedResourceOptions<TItem> {
   workers: Worker<TItem>[];
 }
 
-export default class ElementWithLimitedResource<
+export default class ProcessWithLimitedResource<
   TItem,
-> extends ElementWithResource<TItem> {
+> extends ProcessWithResource<TItem> {
   private _failuresNumber: number;
   private _queuesSizes: number;
 
   constructor(
     name: string,
     private _queue: Queue<TItem>,
-    { workers }: ElementWithLimitedResourceOptions<TItem>,
+    { workers }: ProcessWithLimitedResourceOptions<TItem>,
   ) {
     super(name);
     this.workers = workers;

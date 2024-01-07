@@ -1,7 +1,7 @@
 import Element from '../Element';
 import Worker, { WorkerState } from './Worker';
 
-export default abstract class ElementWithResource<
+export default abstract class ProcessWithResource<
   TItem,
 > extends Element<TItem> {
   private _workers: Worker<TItem>[];

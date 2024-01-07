@@ -2,8 +2,8 @@ import { ExponentialDelayGenerator, ConstantDelayGenerator } from './utils';
 import { ConditionalNext, SingleNext } from './elements/helpers';
 import {
   Worker,
-  ElementWithLimitedResource,
-  ElementWithUnlimitedResource,
+  ProcessWithLimitedResource,
+  ProcessWithUnlimitedResource,
 } from './elements/resourcefull';
 
 import Model from './Model';
@@ -35,7 +35,7 @@ function getDefaultModel(x1: number, x2: number, x3: number) {
   };
 
   const getExcavator = (id: number) => {
-    const excavator = new ElementWithLimitedResource<Truck>(
+    const excavator = new ProcessWithLimitedResource<Truck>(
       `EXCAVATOR ${id}`,
       new Queue(Infinity, [new Truck(50, id)]),
       {
@@ -50,7 +50,7 @@ function getDefaultModel(x1: number, x2: number, x3: number) {
   const excavator1 = getExcavator(1);
   const excavator2 = getExcavator(2);
   const excavator3 = getExcavator(3);
-  const going = new ElementWithUnlimitedResource<Truck>(
+  const going = new ProcessWithUnlimitedResource<Truck>(
     'GOING',
     (id) =>
       new Worker(id, (truck) => {
@@ -65,7 +65,7 @@ function getDefaultModel(x1: number, x2: number, x3: number) {
         throw new Error('Invalid truck capacity');
       }),
   );
-  const crushing = new ElementWithLimitedResource<Truck>(
+  const crushing = new ProcessWithLimitedResource<Truck>(
     'CRUSHING',
     new PriorityQueue<Truck>(Infinity, (a, b) => a.capacity > b.capacity),
     {
@@ -84,7 +84,7 @@ function getDefaultModel(x1: number, x2: number, x3: number) {
       ],
     },
   );
-  const goingBack = new ElementWithUnlimitedResource<Truck>(
+  const goingBack = new ProcessWithUnlimitedResource<Truck>(
     'GOING BACK',
     (id) =>
       new Worker(id, (truck) => {
