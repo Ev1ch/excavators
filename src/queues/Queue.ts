@@ -40,4 +40,12 @@ export default class Queue<TItem> {
   public get isEmpty() {
     return this._items.length === 0;
   }
+
+  public forEach(callback: (item: TItem) => void) {
+    this._items.forEach(callback);
+  }
+
+  public [Symbol.iterator]() {
+    return this._items[Symbol.iterator]();
+  }
 }
