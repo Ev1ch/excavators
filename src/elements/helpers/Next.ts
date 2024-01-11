@@ -50,7 +50,7 @@ export class PrioritizedNext<TItem> implements Next<TItem> {
 
   private getNextElementsSortedByPriority() {
     return this._nextElements
-      .sort((a, b) => b.priority - a.priority)
+      .toSorted((a, b) => b.priority - a.priority)
       .filter(this._filterCondition);
   }
 }
