@@ -7,6 +7,8 @@ export default abstract class Element<TItem> {
   private _tCurrent: number;
   private _tNext: number;
   private _quantity: number;
+  private _insNumber: number;
+  private _outsNumber: number;
   private _totalTimeBeforeIn: number;
   private _tInPrevious: number;
   private _totalTimeBeforeOut: number;
@@ -26,6 +28,8 @@ export default abstract class Element<TItem> {
     this._tOutPrevious = 0;
     this._next = null;
     this._skip = 0;
+    this._insNumber = 0;
+    this._outsNumber = 0;
     this._siblings = [];
   }
 
@@ -37,6 +41,7 @@ export default abstract class Element<TItem> {
     if (!this.shouldSkip()) {
       this._totalTimeBeforeIn += this.tCurrent - this._tInPrevious;
       this._tInPrevious = this.tCurrent;
+      this._insNumber++;
     }
   }
 
@@ -45,7 +50,16 @@ export default abstract class Element<TItem> {
       this._totalTimeBeforeOut += this.tCurrent - this._tOutPrevious;
       this._tOutPrevious = this.tCurrent;
       this._quantity++;
+      this._outsNumber++;
     }
+  }
+
+  public get insNumber() {
+    return this._insNumber;
+  }
+
+  public get outsNumber() {
+    return this._outsNumber;
   }
 
   public get quantity() {

@@ -147,8 +147,8 @@ export default class Model<TItem, TElement extends Element<TItem>> {
     element: ProcessWithLimitedResource<TItem>,
   ) {
     const meanWorkingTime = element.workingTime / this._time;
-    const meanTimeBeforeIn = element.totalTimeBeforeIn / this._time;
-    const meanTimeBeforeOut = element.totalTimeBeforeOut / this._time;
+    const meanTimeBeforeIn = element.totalTimeBeforeIn / element.insNumber;
+    const meanTimeBeforeOut = element.totalTimeBeforeOut / element.outsNumber;
     const failuresProbability =
       element.failuresNumber / (element.quantity + element.failuresNumber);
     const meanQueueSize = element.queuesSizes / this._time;
@@ -169,8 +169,8 @@ export default class Model<TItem, TElement extends Element<TItem>> {
     element: ProcessWithUnlimitedResource<TItem>,
   ) {
     const meanWorkingTime = element.workingTime / this._time;
-    const meanTimeBeforeIn = element.totalTimeBeforeIn / this._time;
-    const meanTimeBeforeOut = element.totalTimeBeforeOut / this._time;
+    const meanTimeBeforeIn = element.totalTimeBeforeIn / element.insNumber;
+    const meanTimeBeforeOut = element.totalTimeBeforeOut / element.outsNumber;
 
     return [
       meanWorkingTime,
@@ -185,7 +185,7 @@ export default class Model<TItem, TElement extends Element<TItem>> {
 
   private printResultsForCreate(element: Create<TItem>) {
     const meanWorkingTime = element.workingTime / this._time;
-    const meanTimeBeforeOut = element.totalTimeBeforeOut / this._time;
+    const meanTimeBeforeOut = element.totalTimeBeforeOut / element.outsNumber;
 
     return [
       meanWorkingTime,
@@ -199,8 +199,8 @@ export default class Model<TItem, TElement extends Element<TItem>> {
   }
 
   private printResultsForElement(element: Element<TItem>) {
-    const meanTimeBeforeIn = element.totalTimeBeforeIn / this._time;
-    const meanTimeBeforeOut = element.totalTimeBeforeOut / this._time;
+    const meanTimeBeforeIn = element.totalTimeBeforeIn / element.insNumber;
+    const meanTimeBeforeOut = element.totalTimeBeforeOut / element.outsNumber;
 
     return [
       '-',
