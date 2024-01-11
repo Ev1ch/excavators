@@ -33,12 +33,15 @@ export interface NextElementWithPriority<TItem> extends NextElement<TItem> {
   priority: number;
 }
 
+export type FilterCondition<TItem> = (
+  nextElement: NextElementWithPriority<TItem>,
+) => boolean;
+
 export class PrioritizedNext<TItem> implements Next<TItem> {
   constructor(
     private _nextElements: NextElementWithPriority<TItem>[],
-    private _filterCondition: (nextElement: NextElement<TItem>) => boolean = ({
-      element,
-    }) => element.isFree,
+    private _filterCondition: FilterCondition<TItem> = ({ element }) =>
+      element.isFree,
   ) {}
 
   public getNextElement() {
