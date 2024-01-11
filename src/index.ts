@@ -1,4 +1,4 @@
-import { SingleNext } from './elements/helpers';
+import { RandomNext, SingleNext } from './elements/helpers';
 import {
   Create,
   Dispose,
@@ -17,14 +17,24 @@ const create = new Create<Item>(
   () => new Item(),
 );
 
-const process = new ProcessWithLimitedResource<Item>('PROCESS', new Queue(1), [
-  new Worker(1, () => new ConstantDelayGenerator(2)),
-]);
+const process1 = new ProcessWithLimitedResource<Item>(
+  'PROCESS 1',
+  new Queue(1),
+  [new Worker(1, () => new ConstantDelayGenerator(2))],
+);
+const process2 = new ProcessWithLimitedResource<Item>(
+  'PROCESS 2',
+  new Queue(1),
+  [new Worker(2, () => new ConstantDelayGenerator(2))],
+);
 
 const dispose = new Dispose('DISPOSE');
 
-create.next = new SingleNext({ element: process });
-process.next = new SingleNext({ element: dispose });
+create.next = new RandomNext([{ element: process1 }, { element: process2 }]);
+process1.next = new SingleNext({ element: dispose });
+process2.next = new SingleNext({ element: dispose });
+process1.siblings = [process2];
+process2.siblings = [process1];
 
-const model = new Model([create, process, dispose]);
+const model = new Model([create, process1, process2, dispose]);
 model.simulate(1000);

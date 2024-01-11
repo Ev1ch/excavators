@@ -3,25 +3,38 @@ import { Queue } from '../../queues';
 import Worker, { WorkerState } from './Worker';
 import ProcessWithResource from './ProcessWithResource';
 
+export interface ProcessWithLimitedResourceOptions {
+  queueSwitchDifference: number;
+}
+
 export default class ProcessWithLimitedResource<
   TItem,
 > extends ProcessWithResource<TItem> {
   private _failuresNumber: number;
   private _queuesSizes: number;
+  private _queueSwitchDifference: number;
+  private _switchesNumber: number;
 
   constructor(
     name: string,
     private _queue: Queue<TItem>,
     workers: Worker<TItem>[],
+    options?: ProcessWithLimitedResourceOptions,
   ) {
     super(name);
     this.workers = workers;
     this._queuesSizes = 0;
     this._failuresNumber = 0;
+    this._switchesNumber = 0;
+    this._queueSwitchDifference = options?.queueSwitchDifference ?? Infinity;
   }
 
   public inAct(item: TItem) {
     super.inAct(item);
+
+    if (this.siblings.length && this._queue.size) {
+      this.trySwitchQueue();
+    }
 
     const freeWorker = this.getFreeWorker();
 
@@ -46,6 +59,23 @@ export default class ProcessWithLimitedResource<
 
     if (!this.shouldSkip()) {
       this._failuresNumber++;
+    }
+  }
+
+  private trySwitchQueue() {
+    for (let i = 0; i < this._queue.size; i++) {
+      const sibling = this.siblings.find(
+        (sibling) =>
+          sibling instanceof ProcessWithLimitedResource &&
+          this._queue.size - sibling.queue.size >= this._queueSwitchDifference,
+      ) as ProcessWithLimitedResource<TItem> | undefined;
+
+      if (!sibling) {
+        break;
+      }
+
+      this._switchesNumber++;
+      sibling.queue.push(this._queue.pop()!);
     }
   }
 
@@ -123,5 +153,9 @@ export default class ProcessWithLimitedResource<
 
   public get queuesSizes() {
     return this._queuesSizes;
+  }
+
+  public get switchesNumber() {
+    return this._switchesNumber;
   }
 }

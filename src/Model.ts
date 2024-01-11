@@ -107,6 +107,7 @@ export default class Model<TItem, TElement extends Element<TItem>> {
         'Mean queue size',
         'Failures number',
         'Failure probability',
+        'Switches number',
       ],
     ];
     for (const element of this._list) {
@@ -151,6 +152,7 @@ export default class Model<TItem, TElement extends Element<TItem>> {
     const failuresProbability =
       element.failuresNumber / (element.quantity + element.failuresNumber);
     const meanQueueSize = element.queuesSizes / this._time;
+    const switchesNumber = element.switchesNumber;
 
     return [
       meanWorkingTime,
@@ -159,6 +161,7 @@ export default class Model<TItem, TElement extends Element<TItem>> {
       meanQueueSize,
       element.failuresNumber,
       failuresProbability,
+      switchesNumber,
     ] as const;
   }
 
@@ -176,6 +179,7 @@ export default class Model<TItem, TElement extends Element<TItem>> {
       '-',
       '-',
       '-',
+      '-',
     ] as const;
   }
 
@@ -183,14 +187,30 @@ export default class Model<TItem, TElement extends Element<TItem>> {
     const meanWorkingTime = element.workingTime / this._time;
     const meanTimeBeforeOut = element.totalTimeBeforeOut / this._time;
 
-    return [meanWorkingTime, '-', meanTimeBeforeOut, '-', '-', '-'] as const;
+    return [
+      meanWorkingTime,
+      '-',
+      meanTimeBeforeOut,
+      '-',
+      '-',
+      '-',
+      '-',
+    ] as const;
   }
 
   private printResultsForElement(element: Element<TItem>) {
     const meanTimeBeforeIn = element.totalTimeBeforeIn / this._time;
     const meanTimeBeforeOut = element.totalTimeBeforeOut / this._time;
 
-    return ['-', meanTimeBeforeIn, meanTimeBeforeOut, '-', '-', '-'] as const;
+    return [
+      '-',
+      meanTimeBeforeIn,
+      meanTimeBeforeOut,
+      '-',
+      '-',
+      '-',
+      '-',
+    ] as const;
   }
 
   private getFormattedRow(row: Row) {
