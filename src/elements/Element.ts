@@ -131,7 +131,7 @@ export default abstract class Element<TItem> {
   }
 
   public shouldSkip() {
-    return this._skip >= this.tCurrent;
+    return this._skip > this.tCurrent;
   }
 
   public getInformation() {
