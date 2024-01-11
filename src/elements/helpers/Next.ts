@@ -34,14 +34,21 @@ export interface NextElementWithPriority<TItem> extends NextElement<TItem> {
 }
 
 export class PrioritizedNext<TItem> implements Next<TItem> {
-  constructor(private _nextElements: NextElementWithPriority<TItem>[]) {}
+  constructor(
+    private _nextElements: NextElementWithPriority<TItem>[],
+    private _filterCondition: (nextElement: NextElement<TItem>) => boolean = ({
+      element,
+    }) => element.isFree,
+  ) {}
 
   public getNextElement() {
     return this.getNextElementsSortedByPriority().at(0) ?? null;
   }
 
   private getNextElementsSortedByPriority() {
-    return this._nextElements.toSorted((a, b) => b.priority - a.priority);
+    return this._nextElements
+      .sort((a, b) => b.priority - a.priority)
+      .filter(this._filterCondition);
   }
 }
 
