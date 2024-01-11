@@ -1,4 +1,4 @@
-import { RandomNext, SingleNext } from './elements/helpers';
+import { RandomNext, SingleNext } from './elements';
 import {
   Create,
   Dispose,

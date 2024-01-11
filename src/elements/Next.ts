@@ -1,4 +1,4 @@
-import Element from '../Element';
+import Element from './Element';
 
 export interface NextElement<TItem> {
   element: Element<TItem>;

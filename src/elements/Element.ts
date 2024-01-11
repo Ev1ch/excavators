@@ -1,4 +1,4 @@
-import { Next } from './helpers';
+import type { Next } from './Next';
 
 export default abstract class Element<TItem> {
   private static NEXT_ID = 0;
