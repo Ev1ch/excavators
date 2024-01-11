@@ -74,7 +74,10 @@ export default class ProcessWithLimitedResource<
         break;
       }
 
-      this._switchesNumber++;
+      if (!this.shouldSkip()) {
+        this._switchesNumber++;
+      }
+
       sibling.queue.push(this._queue.pop()!);
     }
   }
