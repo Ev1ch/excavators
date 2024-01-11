@@ -27,7 +27,7 @@ export default abstract class Element<TItem> {
     this._totalTimeBeforeOut = 0;
     this._tOutPrevious = 0;
     this._next = null;
-    this._skip = 0;
+    this._skip = -1;
     this._insNumber = 0;
     this._outsNumber = 0;
     this._siblings = [];
@@ -131,7 +131,7 @@ export default abstract class Element<TItem> {
   }
 
   public shouldSkip() {
-    return this._skip > this.tCurrent;
+    return this._skip >= this.tCurrent;
   }
 
   public getInformation() {
