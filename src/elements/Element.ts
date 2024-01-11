@@ -13,6 +13,7 @@ export default abstract class Element<TItem> {
   private _tOutPrevious: number;
   private _skip: number;
   private _next: Next<TItem> | null;
+  private _siblings: Element<TItem>[];
 
   constructor(private _name: string) {
     this._id = Element.NEXT_ID++;
@@ -25,6 +26,7 @@ export default abstract class Element<TItem> {
     this._tOutPrevious = 0;
     this._next = null;
     this._skip = 0;
+    this._siblings = [];
   }
 
   public abstract get isFree(): boolean;
@@ -60,6 +62,14 @@ export default abstract class Element<TItem> {
 
   public get tCurrent() {
     return this._tCurrent;
+  }
+
+  public get siblings() {
+    return this._siblings;
+  }
+
+  public set siblings(siblings: Element<TItem>[]) {
+    this._siblings = siblings;
   }
 
   public set tCurrent(tCurrent: number) {
