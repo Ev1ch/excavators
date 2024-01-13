@@ -1,5 +1,9 @@
 import Queue from './Queue';
 
+/**
+ * Priority queue, which return items in order of priority
+ * (starting with higher priority by default).
+ */
 export default class PriorityQueue<TItem> extends Queue<TItem> {
   protected static readonly TOP_INDEX = 0;
 
