@@ -21,7 +21,10 @@ export default class Create<TItem> extends Element<TItem> {
     this._worker.item = item;
     const delay = this._worker.getDelay();
     this.tNext = this.tCurrent + delay;
-    this._workingTime += delay;
+
+    if (!this.shouldSkip()) {
+      this._workingTime += delay;
+    }
 
     const nextElement = this.next?.getNextElement(item);
     nextElement?.element.inAct(item);
