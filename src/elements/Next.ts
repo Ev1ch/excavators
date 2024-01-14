@@ -1,7 +1,11 @@
 import Element from './Element';
+import { ProcessWithLimitedResource } from './resourcefull';
 
-export interface NextElement<TItem> {
-  element: Element<TItem>;
+export interface NextElement<
+  TItem,
+  TElement extends Element<TItem> = Element<TItem>,
+> {
+  element: TElement;
   withBlocking?: boolean;
 }
 
@@ -106,5 +110,24 @@ export class ConditionalNext<TItem> implements Next<TItem> {
   ) {
     this._nextElements.push({ element, condition });
     return this;
+  }
+}
+
+export class MinimumQueueSizeNext<TItem> implements Next<TItem> {
+  constructor(
+    private _nextElements: NextElement<
+      TItem,
+      ProcessWithLimitedResource<TItem>
+    >[],
+  ) {}
+
+  public getNextElement() {
+    return this.getNextElementsSortedByQueueSize().at(0) ?? null;
+  }
+
+  private getNextElementsSortedByQueueSize() {
+    return this._nextElements.sort(
+      (a, b) => a.element.queue.size - b.element.queue.size,
+    );
   }
 }
