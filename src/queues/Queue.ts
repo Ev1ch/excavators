@@ -1,8 +1,13 @@
 export default class Queue<TItem> {
-  constructor(
-    protected _capacity: number = 0,
-    protected _items: TItem[] = [],
-  ) {}
+  constructor(protected _capacity: number = 0, protected _items: TItem[] = []) {
+    if (_capacity < 0) {
+      throw new Error('Capacity cannot be less than 0');
+    }
+
+    if (_items.length > _capacity) {
+      throw new Error('Items length cannot be greater than capacity');
+    }
+  }
 
   public get capacity() {
     return this._capacity;
