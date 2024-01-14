@@ -125,7 +125,7 @@ export class MinimumQueueSizeNext<TItem> implements Next<TItem> {
     return this.getNextElementsSortedByQueueSize().at(0) ?? null;
   }
 
-  private getNextElementsSortedByQueueSize() {
+  protected getNextElementsSortedByQueueSize() {
     return this._nextElements.sort(
       (a, b) => a.element.queue.size - b.element.queue.size,
     );
